@@ -31,10 +31,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     const mockResults = <AppProfile>[
-      AppProfile('John Doe', 'jdoe@flutter.io',
-          'https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX4057996.jpg'),
+      AppProfile('John Doe', 'jdoe@flutter.io', 'https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX4057996.jpg'),
       AppProfile('Paul', 'paul@google.com',
-          'https://mbtskoudsalg.com/images/person-stock-image-png.png'),
+          'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'),
       AppProfile('Fred', 'fred@google.com',
           'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'),
       AppProfile('Brian', 'brian@flutter.io',
@@ -81,8 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 textCapitalization: TextCapitalization.words,
                 enabled: true,
                 maxChips: 5,
-                textStyle: const TextStyle(
-                    height: 1.5, fontFamily: 'Roboto', fontSize: 16),
+                suggestionBoxBackgroundColor: Colors.grey,
+                suggestionBoxElevation: 4,
+                textStyle: const TextStyle(height: 1.5, fontFamily: 'Roboto', fontSize: 16),
                 decoration: const InputDecoration(
                   // prefixIcon: Icon(Icons.search),
                   // hintText: formControl.hint,
@@ -95,18 +95,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (query.isNotEmpty) {
                     var lowercaseQuery = query.toLowerCase();
                     return mockResults.where((profile) {
-                      return profile.name
-                              .toLowerCase()
-                              .contains(query.toLowerCase()) ||
-                          profile.email
-                              .toLowerCase()
-                              .contains(query.toLowerCase());
+                      return profile.name.toLowerCase().contains(query.toLowerCase()) ||
+                          profile.email.toLowerCase().contains(query.toLowerCase());
                     }).toList(growable: false)
                       ..sort((a, b) => a.name
                           .toLowerCase()
                           .indexOf(lowercaseQuery)
-                          .compareTo(
-                              b.name.toLowerCase().indexOf(lowercaseQuery)));
+                          .compareTo(b.name.toLowerCase().indexOf(lowercaseQuery)));
                   }
                   // return <AppProfile>[];
                   return mockResults;
@@ -202,9 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
               RaisedButton(
                 child: Text('Add Chip'),
                 onPressed: () {
-                  _chipKey.currentState.selectSuggestion(AppProfile(
-                      'Gina',
-                      'fred@flutter.io',
+                  _chipKey.currentState.selectSuggestion(AppProfile('Gina', 'fred@flutter.io',
                       'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'));
                 },
               ),
@@ -225,10 +218,7 @@ class AppProfile {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AppProfile &&
-          runtimeType == other.runtimeType &&
-          name == other.name;
+      identical(this, other) || other is AppProfile && runtimeType == other.runtimeType && name == other.name;
 
   @override
   int get hashCode => name.hashCode;

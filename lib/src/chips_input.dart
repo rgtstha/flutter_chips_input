@@ -50,6 +50,8 @@ class ChipsInput<T> extends StatefulWidget {
     this.allowChipEditing = false,
     this.focusNode,
     this.initialSuggestions,
+    this.suggestionBoxBackgroundColor,
+    this.suggestionBoxElevation,
   })  : assert(maxChips == null || initialValue.length <= maxChips),
         super(key: key);
 
@@ -76,6 +78,8 @@ class ChipsInput<T> extends StatefulWidget {
   final bool allowChipEditing;
   final FocusNode? focusNode;
   final List<T>? initialSuggestions;
+  final Color? suggestionBoxBackgroundColor;
+  final double? suggestionBoxElevation;
 
   // final Color cursorColor;
 
@@ -119,8 +123,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
   void initState() {
     super.initState();
     _chips.addAll(widget.initialValue);
-    _suggestions =
-        widget.initialSuggestions?.where((r) => !_chips.contains(r)).toList(growable: false);
+    _suggestions = widget.initialSuggestions?.where((r) => !_chips.contains(r)).toList(growable: false);
     _suggestionsBoxController = SuggestionsBoxController(context);
 
     _focusNode = widget.focusNode ?? FocusNode();
@@ -184,8 +187,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
         final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
         final topAvailableSpace = renderBoxOffset.dy;
         final mq = MediaQuery.of(context);
-        final bottomAvailableSpace =
-            mq.size.height - mq.viewInsets.bottom - renderBoxOffset.dy - size.height;
+        final bottomAvailableSpace = mq.size.height - mq.viewInsets.bottom - renderBoxOffset.dy - size.height;
         var _suggestionBoxHeight = max(topAvailableSpace, bottomAvailableSpace);
         if (null != widget.suggestionsBoxMaxHeight) {
           _suggestionBoxHeight = min(_suggestionBoxHeight, widget.suggestionsBoxMaxHeight!);
@@ -199,24 +201,25 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
           builder: (context, snapshot) {
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               final suggestionsListView = Material(
-                elevation: 0,
+                color: widget.suggestionBoxBackgroundColor,
+                elevation: widget.suggestionBoxElevation ?? 0,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     maxHeight: _suggestionBoxHeight,
                   ),
                   child: Scrollbar(
                     child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return widget.suggestionBuilder(
-                        context,
-                        this,
-                        _suggestions![index],
-                      );
-                    },
-                  ),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return widget.suggestionBuilder(
+                          context,
+                          this,
+                          _suggestions![index],
+                        );
+                      },
+                    ),
                   ),
                 ),
               );
@@ -398,8 +401,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
   @override
   Widget build(BuildContext context) {
     _nodeAttachment.reparent();
-    final chipsChildren =
-        _chips.map<Widget>((data) => widget.chipBuilder(context, this, data)).toList();
+    final chipsChildren = _chips.map<Widget>((data) => widget.chipBuilder(context, this, data)).toList();
 
     final theme = Theme.of(context);
 
@@ -439,8 +441,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
           final sd = str.substring(0, str.length - 1);
 
           /// Make sure to also update cursor position using the TextSelection.collapsed.
-          updateEditingValue(
-              TextEditingValue(text: sd, selection: TextSelection.collapsed(offset: sd.length)));
+          updateEditingValue(TextEditingValue(text: sd, selection: TextSelection.collapsed(offset: sd.length)));
         }
       },
       child: NotificationListener<SizeChangedLayoutNotification>(
