@@ -224,12 +224,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
                   link: _layerLink,
                   showWhenUnlinked: false,
                   offset: compositedTransformFollowerOffset,
-                  child: !showTop
-                      ? suggestionsListView
-                      : FractionalTranslation(
-                          translation: const Offset(0, -1),
-                          child: suggestionsListView,
-                        ),
+                  child: suggestionsListView,
                 ),
               );
             }
