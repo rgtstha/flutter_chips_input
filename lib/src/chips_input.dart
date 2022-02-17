@@ -204,7 +204,8 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
                   constraints: BoxConstraints(
                     maxHeight: _suggestionBoxHeight,
                   ),
-                  child: ListView.builder(
+                  child: Scrollbar(
+                    child: ListView.builder(
                     shrinkWrap: true,
                     padding: EdgeInsets.zero,
                     itemCount: snapshot.data!.length,
@@ -215,6 +216,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
                         _suggestions![index],
                       );
                     },
+                  ),
                   ),
                 ),
               );
